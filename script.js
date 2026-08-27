@@ -271,3 +271,152 @@ document.addEventListener(
 
 updateActiveLink();
 updateHeader();
+/* =====================================================
+   POSTS SEARCH
+===================================================== */
+
+const postSearch =
+    document.getElementById("postSearch");
+
+const clearSearch =
+    document.getElementById("clearSearch");
+
+const posts =
+    document.querySelectorAll(".post-card");
+
+const noResults =
+    document.getElementById("noResults");
+
+const searchResult =
+    document.getElementById("searchResult");
+
+
+function searchPosts() {
+
+    const searchTerm =
+        postSearch.value
+            .toLowerCase()
+            .trim();
+
+    let visiblePosts = 0;
+
+
+    posts.forEach((post) => {
+
+        const title =
+            post.dataset.title
+                ?.toLowerCase() || "";
+
+        const category =
+            post.dataset.category
+                ?.toLowerCase() || "";
+
+        const tags =
+            post.dataset.tags
+                ?.toLowerCase() || "";
+
+        const content =
+            post.textContent
+                .toLowerCase();
+
+        const searchableText =
+            `${title} ${category} ${tags} ${content}`;
+
+
+        const matches =
+            searchableText.includes(searchTerm);
+
+
+        if (matches) {
+
+            post.classList.remove("hidden");
+
+            visiblePosts++;
+
+        } else {
+
+            post.classList.add("hidden");
+
+        }
+
+    });
+
+
+    /* SEARCH RESULT TEXT */
+
+    if (searchTerm === "") {
+
+        searchResult.textContent =
+            `Showing ${posts.length} posts`;
+
+    } else if (visiblePosts === 0) {
+
+        searchResult.textContent =
+            "No matching posts found";
+
+    } else {
+
+        searchResult.textContent =
+            `Found ${visiblePosts} ${
+                visiblePosts === 1
+                    ? "post"
+                    : "posts"
+            }`;
+
+    }
+
+
+    /* NO RESULTS MESSAGE */
+
+    if (visiblePosts === 0) {
+
+        noResults.style.display =
+            "block";
+
+    } else {
+
+        noResults.style.display =
+            "none";
+
+    }
+
+
+    /* CLEAR BUTTON */
+
+    if (searchTerm.length > 0) {
+
+        clearSearch.style.display =
+            "grid";
+
+    } else {
+
+        clearSearch.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* SEARCH WHILE TYPING */
+
+postSearch?.addEventListener(
+    "input",
+    searchPosts
+);
+
+
+/* CLEAR SEARCH */
+
+clearSearch?.addEventListener(
+    "click",
+    () => {
+
+        postSearch.value = "";
+
+        searchPosts();
+
+        postSearch.focus();
+
+    }
+);
